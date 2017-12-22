@@ -1,0 +1,10 @@
+{
+  "name": "node-csv2mysql",
+  "description": "",
+  "license": "MIT",
+  "dependencies": {
+    "csv": "^2.0.0",
+    "minimist": "^1.2.0",
+    "mysql": "^2.15.0"
+  }
+}
