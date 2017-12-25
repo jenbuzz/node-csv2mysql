@@ -1,7 +1,11 @@
 {
   "name": "node-csv2mysql",
-  "description": "",
+  "description": "Import csv file into MySQL",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dan-lyn/node-csv2mysql"
+  },
   "dependencies": {
     "csv": "^2.0.0",
     "minimist": "^1.2.0",
