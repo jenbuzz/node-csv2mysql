@@ -35,46 +35,25 @@ var connection = mysql.createConnection({
 connection.connect();
 
 var parser = csv({delimiter: ','}, function(err, data) {
-    var insertQuery = 'INSERT INTO ' + table + ' ';
+    var insertQuery = 'INSERT INTO ' + table + ' SET ?';
 
     var fields = data.shift();
 
-    insertQuery += '(';
-    for (var i = 0; i < fields.length; i++) {
-        insertQuery += fields[i].toLowerCase();
-
-        if (i<fields.length-1) {
-            insertQuery += ','
-        }
-    }
-    insertQuery += ') ';
-
-    insertQuery += 'VALUES ';
     for (var j = 0; j < data.length; j++) {
-        insertQuery += '(';
+        var newEntry = {};
 
         for (var k = 0; k < fields.length; k++) {
-            insertQuery += connection.escape(data[j][k]);
+            newEntry[fields[k].toLowerCase()] = data[j][k];
+        }
 
-            if (k<fields.length-1) {
-                insertQuery += ','
+        connection.query(insertQuery, newEntry, function (err, result) {
+            if (err) {
+                throw err;
             }
-        }
-
-        insertQuery += ')';
-
-        if (j<data.length-1) {
-            insertQuery += ','
-        }
+        });
     }
-
-    connection.query(insertQuery, function (err, result) {
-        if (err) {
-            throw err;
-        }
-
-        connection.end();
-    });
+    
+    connection.end();
 });
 
 fs.createReadStream(__dirname + '/' + file).pipe(parser);
