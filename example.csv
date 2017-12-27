@@ -1,3 +1,3 @@
-FieldX,FieldY,FieldZ
-testx1,testy1,testz1
-testx2,testy2,testz2
+FieldX,FieldY,FieldZ,[RelationX|csv2mysql_id|relation_id]
+testx1,testy1,testz1,2
+testx2,testy2,testz2,1

@@ -42,18 +42,57 @@ var parser = csv({delimiter: ','}, function(err, data) {
     for (var j = 0; j < data.length; j++) {
         var newEntry = {};
 
+        var relationTableAndCols = [];
+
         for (var k = 0; k < fields.length; k++) {
+            var isRelation = fields[k].match(/\[(.*?)\]/);
+            if (isRelation && isRelation.length >= 2) {
+                var relationData = isRelation[1].split('|');
+                if (relationData && relationData.length === 3) {
+                    relationTableAndCols[k] = {
+                        table: relationData[0],
+                        column_x: relationData[1],
+                        column_y: relationData[2]
+                    };
+
+                    continue;
+                }
+            }
+
             newEntry[fields[k].toLowerCase()] = data[j][k];
         }
+
+        const dataIndex = j;
 
         connection.query(insertQuery, newEntry, function (err, result) {
             if (err) {
                 throw err;
             }
+
+            var insertId = result.insertId;
+
+            for (var l = 0; l < relationTableAndCols.length; l++) {
+                if (relationTableAndCols[l] !== undefined) {
+                    var relData = relationTableAndCols[l];
+                    var relValue = data[dataIndex][l];
+
+                    if (relValue) {
+                        var relEntry = {};
+                        relEntry[relData.column_x] = insertId;
+                        relEntry[relData.column_y] = relValue;
+
+                        var relQuery = 'INSERT INTO ' + relData.table.toLowerCase() + ' SET ?';
+
+                        connection.query(relQuery, relEntry, function (err, result) {
+                            if (err) {
+                                throw err;
+                            }
+                        });
+                    }
+                }
+            }
         });
     }
-    
-    connection.end();
 });
 
 fs.createReadStream(__dirname + '/' + file).pipe(parser);
