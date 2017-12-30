@@ -13,6 +13,7 @@ var pw = argv.pw !== undefined ? argv.pw : '';
 var db = argv.db !== undefined ? argv.db : '';
 var table = argv.table !== undefined ? argv.table : '';
 var file = argv.file !== undefined ? argv.file : '';
+var delimiter = argv.delimiter !== undefined ? argv.delimiter : ',';
 
 if (!db) {
     log(chalk.bold.red('Error: ') + chalk.red('Please define db!'));
@@ -37,7 +38,7 @@ var connection = mysql.createConnection({
 });
 connection.connect();
 
-var parser = csv({delimiter: ','}, function(err, data) {
+var parser = csv({delimiter: delimiter}, function(err, data) {
     var insertQuery = 'INSERT INTO ' + table + ' SET ?';
 
     var fields = data.shift();

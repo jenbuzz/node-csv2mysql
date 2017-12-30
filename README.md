@@ -16,10 +16,9 @@ Run "node node-csv2mysql.js" with the required options.
 |db|MySQL database name||
 |table|MySQL table name||
 |file|Name of csv file to import||
+|delimiter|CSV data delimiter|,|
 
 ### CSV syntax
-The delimiter must be a comma.
-
 Insert values into a relational table using the following syntax in the first row to specify table and column names:
 
 ``[RelationX|csv2mysql_id|relation_id]``
