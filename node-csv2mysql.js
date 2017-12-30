@@ -2,6 +2,9 @@ var fs = require('fs');
 var csv = require('csv-parse');
 var mysql = require('mysql');
 
+var chalk = require('chalk');
+var log = console.log;
+
 var argv = require('minimist')(process.argv.slice(2));
 
 var host = argv.host !== undefined ? argv.host : '127.0.0.1';
@@ -12,17 +15,17 @@ var table = argv.table !== undefined ? argv.table : '';
 var file = argv.file !== undefined ? argv.file : '';
 
 if (!db) {
-    console.error('Please define db!');
+    log(chalk.bold.red('Error: ') + chalk.red('Please define db!'));
     return;
 }
 
 if (!table) {
-    console.error('Please define table!');
+    log(chalk.bold.red('Error: ') + chalk.red('Please define table!'));
     return;
 }
 
 if (!file) {
-    console.error('Please define file!');
+    log(chalk.bold.red('Error: ') + chalk.red('Please define file!'));
     return;
 }
 
@@ -64,7 +67,7 @@ var parser = csv({delimiter: ','}, function(err, data) {
 
         const dataIndex = j;
 
-        connection.query(insertQuery, newEntry, function (err, result) {
+        var query = connection.query(insertQuery, newEntry, function (err, result) {
             if (err) {
                 throw err;
             }
@@ -84,16 +87,18 @@ var parser = csv({delimiter: ','}, function(err, data) {
 
                             var relQuery = 'INSERT INTO ' + relData.table.toLowerCase() + ' SET ?';
 
-                            connection.query(relQuery, relEntry, function (err, result) {
+                            var query = connection.query(relQuery, relEntry, function (err, result) {
                                 if (err) {
                                     throw err;
                                 }
                             });
+                            log(chalk.green(query.sql));
                         }
                     }
                 }
             }
         });
+        log(chalk.green(query.sql));
     }
 });
 
