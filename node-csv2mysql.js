@@ -74,20 +74,22 @@ var parser = csv({delimiter: ','}, function(err, data) {
             for (var l = 0; l < relationTableAndCols.length; l++) {
                 if (relationTableAndCols[l] !== undefined) {
                     var relData = relationTableAndCols[l];
-                    var relValue = data[dataIndex][l];
+                    var relValue = data[dataIndex][l].split('-');
 
-                    if (relValue) {
-                        var relEntry = {};
-                        relEntry[relData.column_x] = insertId;
-                        relEntry[relData.column_y] = relValue;
+                    if (relValue.length > 0) {
+                        for (var m = 0; m < relValue.length; m++) {
+                            var relEntry = {};
+                            relEntry[relData.column_x] = insertId;
+                            relEntry[relData.column_y] = relValue[m];
 
-                        var relQuery = 'INSERT INTO ' + relData.table.toLowerCase() + ' SET ?';
+                            var relQuery = 'INSERT INTO ' + relData.table.toLowerCase() + ' SET ?';
 
-                        connection.query(relQuery, relEntry, function (err, result) {
-                            if (err) {
-                                throw err;
-                            }
-                        });
+                            connection.query(relQuery, relEntry, function (err, result) {
+                                if (err) {
+                                    throw err;
+                                }
+                            });
+                        }
                     }
                 }
             }
