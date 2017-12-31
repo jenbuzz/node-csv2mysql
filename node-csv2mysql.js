@@ -1,19 +1,19 @@
-var fs = require('fs');
-var csv = require('csv-parse');
-var mysql = require('mysql');
+const fs = require('fs');
+const csv = require('csv-parse');
+const mysql = require('mysql');
 
-var chalk = require('chalk');
-var log = console.log;
+const chalk = require('chalk');
+const log = console.log;
 
-var argv = require('minimist')(process.argv.slice(2));
+const argv = require('minimist')(process.argv.slice(2));
 
-var host = argv.host !== undefined ? argv.host : '127.0.0.1';
-var user = argv.user !== undefined ? argv.user : 'root';
-var pw = argv.pw !== undefined ? argv.pw : '';
-var db = argv.db !== undefined ? argv.db : '';
-var table = argv.table !== undefined ? argv.table : '';
-var file = argv.file !== undefined ? argv.file : '';
-var delimiter = argv.delimiter !== undefined ? argv.delimiter : ',';
+const host = argv.host !== undefined ? argv.host : '127.0.0.1';
+const user = argv.user !== undefined ? argv.user : 'root';
+const pw = argv.pw !== undefined ? argv.pw : '';
+const db = argv.db !== undefined ? argv.db : '';
+const table = argv.table !== undefined ? argv.table : '';
+const file = argv.file !== undefined ? argv.file : '';
+const delimiter = argv.delimiter !== undefined ? argv.delimiter : ',';
 
 if (!db) {
     log(chalk.bold.red('Error: ') + chalk.red('Please define db!'));
@@ -30,30 +30,29 @@ if (!file) {
     return;
 }
 
-var connection = mysql.createConnection({
+const connection = mysql.createConnection({
     host: host,
     user: user,
     password: pw,
     database: db
 });
-connection.connect();
 
-var parser = csv({delimiter: delimiter}, function(err, data) {
-    var insertQuery = 'INSERT INTO ' + table + ' SET ?';
+let parser = csv({delimiter: delimiter}, function(err, data) {
+    let insertQuery = 'INSERT INTO ' + table + ' SET ?';
 
-    var fields = data.shift();
+    let fields = data.shift();
 
-    for (var j = 0; j < data.length; j++) {
-        var newEntry = {};
+    for (let i = 0; i < data.length; i++) {
+        let newEntry = {};
 
-        var relationTableAndCols = [];
+        let relationTableAndCols = [];
 
-        for (var k = 0; k < fields.length; k++) {
-            var isRelation = fields[k].match(/\[(.*?)\]/);
+        for (let j = 0; j < fields.length; j++) {
+            let isRelation = fields[j].match(/\[(.*?)\]/);
             if (isRelation && isRelation.length >= 2) {
-                var relationData = isRelation[1].split('|');
+                let relationData = isRelation[1].split('|');
                 if (relationData && relationData.length === 3) {
-                    relationTableAndCols[k] = {
+                    relationTableAndCols[j] = {
                         table: relationData[0],
                         column_x: relationData[1],
                         column_y: relationData[2]
@@ -63,32 +62,32 @@ var parser = csv({delimiter: delimiter}, function(err, data) {
                 }
             }
 
-            newEntry[fields[k].toLowerCase()] = data[j][k];
+            newEntry[fields[j].toLowerCase()] = data[i][j];
         }
 
-        const dataIndex = j;
+        const dataIndex = i;
 
-        var query = connection.query(insertQuery, newEntry, function (err, result) {
+        let query = connection.query(insertQuery, newEntry, function (err, result) {
             if (err) {
                 throw err;
             }
 
-            var insertId = result.insertId;
+            let insertId = result.insertId;
 
-            for (var l = 0; l < relationTableAndCols.length; l++) {
-                if (relationTableAndCols[l] !== undefined) {
-                    var relData = relationTableAndCols[l];
-                    var relValue = data[dataIndex][l].split('-');
+            for (let k = 0; k < relationTableAndCols.length; k++) {
+                if (relationTableAndCols[k] !== undefined) {
+                    let relData = relationTableAndCols[k];
+                    let relValue = data[dataIndex][k].split('-');
 
                     if (relValue.length > 0) {
-                        for (var m = 0; m < relValue.length; m++) {
-                            var relEntry = {};
+                        for (let l = 0; l < relValue.length; l++) {
+                            let relEntry = {};
                             relEntry[relData.column_x] = insertId;
-                            relEntry[relData.column_y] = relValue[m];
+                            relEntry[relData.column_y] = relValue[l];
 
-                            var relQuery = 'INSERT INTO ' + relData.table.toLowerCase() + ' SET ?';
+                            let relQuery = 'INSERT INTO ' + relData.table.toLowerCase() + ' SET ?';
 
-                            var query = connection.query(relQuery, relEntry, function (err, result) {
+                            let query = connection.query(relQuery, relEntry, function (err, result) {
                                 if (err) {
                                     throw err;
                                 }
