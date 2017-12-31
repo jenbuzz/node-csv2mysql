@@ -9,7 +9,7 @@ const argv = require('minimist')(process.argv.slice(2));
 
 const host = argv.host !== undefined ? argv.host : '127.0.0.1';
 const user = argv.user !== undefined ? argv.user : 'root';
-const pw = argv.pw !== undefined ? argv.pw : '';
+const pw = argv.pw !== undefined ? argv.pw+'' : '';
 const db = argv.db !== undefined ? argv.db : '';
 const table = argv.table !== undefined ? argv.table : '';
 const file = argv.file !== undefined ? argv.file : '';
@@ -69,6 +69,7 @@ let parser = csv({delimiter: delimiter}, function(err, data) {
 
         let query = connection.query(insertQuery, newEntry, function (err, result) {
             if (err) {
+                log(chalk.bold.red('Error: ') + chalk.red(err.sqlMessage));
                 throw err;
             }
 
@@ -89,6 +90,7 @@ let parser = csv({delimiter: delimiter}, function(err, data) {
 
                             let query = connection.query(relQuery, relEntry, function (err, result) {
                                 if (err) {
+                                    log(chalk.bold.red('Error: ') + chalk.red(err.sqlMessage));
                                     throw err;
                                 }
                             });
@@ -102,4 +104,18 @@ let parser = csv({delimiter: delimiter}, function(err, data) {
     }
 });
 
-fs.createReadStream(__dirname + '/' + file).pipe(parser);
+fs.access(__dirname + '/' + file, fs.constants.R_OK, (err) => {
+    if (err) {
+        log(chalk.bold.red('Error: ') + chalk.red('No access to file!'));
+        return;
+    }
+
+    connection.connect(function(err) {
+        if (err) {
+            log(chalk.bold.red('Error: ') + chalk.red('Could not connect to database!'));
+            return;
+        }
+
+        fs.createReadStream(__dirname + '/' + file).pipe(parser);
+    });
+});
