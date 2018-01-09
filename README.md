@@ -20,6 +20,13 @@ Enter your MySQL password in the prompt that appears after starting the script.
 |delimiter|CSV data delimiter|,|
 
 ### CSV syntax
+First row defines the column names in MySQL. All names from the CSV-file will be lowercased. The following rows are the values inserted. By default all values should be seperated by a comma - otherwise set the delimiter something else in the arguments.
+
+```
+FieldX,FieldY,FieldZ
+testx1,testy1,testz1
+```
+
 Insert values into a relational table using the following syntax in the first row to specify table and column names:
 
 ``[RelationX|csv2mysql_id|relation_id]``
