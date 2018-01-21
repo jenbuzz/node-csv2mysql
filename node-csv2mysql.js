@@ -16,6 +16,7 @@ const log = console.log;
 
 const argv = require('minimist')(process.argv.slice(2));
 
+// Arguments
 const host = argv.host !== undefined ? argv.host : '127.0.0.1';
 const user = argv.user !== undefined ? argv.user : 'root';
 const db = argv.db !== undefined ? argv.db : '';
@@ -47,6 +48,7 @@ prompt.get(promptProperties, function (err, result) {
 
     const pw = result.password;
 
+    // Setip MySQL connection
     let connection = mysql.createConnection({
         host: host,
         user: user,
@@ -54,9 +56,11 @@ prompt.get(promptProperties, function (err, result) {
         database: db
     });
 
+    // Start parsing the csv file
     let parser = csv({delimiter: delimiter}, function(err, data) {
         let insertQuery = 'INSERT INTO ' + table + ' SET ?';
 
+        // Getting the first row containing the table column names
         let fields = data.shift();
 
         for (let i = 0; i < data.length; i++) {
@@ -65,6 +69,7 @@ prompt.get(promptProperties, function (err, result) {
             let relationTableAndCols = [];
 
             for (let j = 0; j < fields.length; j++) {
+                // Checking if the column is for a relationship
                 let isRelation = fields[j].match(/\[(.*?)\]/);
                 if (isRelation && isRelation.length >= 2) {
                     let relationData = isRelation[1].split('|');
@@ -79,11 +84,13 @@ prompt.get(promptProperties, function (err, result) {
                     }
                 }
 
+                // Adding data to be inserted to a new entry object
                 newEntry[fields[j].toLowerCase()] = data[i][j];
             }
 
             const dataIndex = i;
 
+            // Insert the data
             let query = connection.query(insertQuery, newEntry, function (err, result) {
                 if (err) {
                     log(chalk.bold.red('Error: ') + chalk.red(err.sqlMessage));
@@ -92,6 +99,7 @@ prompt.get(promptProperties, function (err, result) {
 
                 let insertId = result.insertId;
 
+                // Add relationship data if any specified
                 for (let k = 0; k < relationTableAndCols.length; k++) {
                     if (relationTableAndCols[k] !== undefined) {
                         let relData = relationTableAndCols[k];
@@ -121,18 +129,21 @@ prompt.get(promptProperties, function (err, result) {
         }
     });
 
+    // Check for valid file source
     fs.access(__dirname + '/' + file, fs.constants.R_OK, (err) => {
         if (err) {
             log(chalk.bold.red('Error: ') + chalk.red('No access to file!'));
             return;
         }    
 
+        // Connect to database
         connection.connect(function(err) {
             if (err) {
                 log(chalk.bold.red('Error: ') + chalk.red('Could not connect to database!'));
                 return;
             }
 
+            // Start reading file content
             fs.createReadStream(__dirname + '/' + file).pipe(parser);
         });
     });
