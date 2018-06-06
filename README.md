@@ -35,4 +35,4 @@ In this example the table name would be "relationx" and the column names "csv2my
 
 To insert multiple values seperate the values with a "-".
 
-See [example.csv](https://raw.githubusercontent.com/dan-lyn/node-csv2mysql/master/example.csv) for more.
+See [example.csv](https://raw.githubusercontent.com/jenbuzz/node-csv2mysql/master/example.csv) for more.

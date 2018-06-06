@@ -12,7 +12,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/dan-lyn/node-csv2mysql"
+    "url": "https://github.com/jenbuzz/node-csv2mysql"
   },
   "dependencies": {
     "chalk": "^2.3.0",
