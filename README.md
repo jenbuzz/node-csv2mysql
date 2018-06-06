@@ -29,7 +29,7 @@ testx1,testy1,testz1
 
 Insert values into a relational table using the following syntax in the first row to specify table and column names:
 
-``[RelationX|csv2mysql_id|relation_id]``
+``[relationx|csv2mysql_id|relation_id]``
 
 In this example the table name would be "relationx" and the column names "csv2mysql_id" (referring to the id of the newly inserted row) and "relation_id" (referring to the id of the related row).
 

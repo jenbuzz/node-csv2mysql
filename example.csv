@@ -1,4 +1,4 @@
-FieldX,FieldY,FieldZ,[RelationX|csv2mysql_id|relation_id]
+FieldX,FieldY,FieldZ,[relationx|csv2mysql_id|relation_id]
 testx1,testy1,testz1,2-3
 testx2,testy2,testz2,1-2
 testx3,testy3,testz3,1
