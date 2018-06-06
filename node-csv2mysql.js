@@ -11,20 +11,19 @@ const promptProperties = [
     }
 ];
 
+// Logging
 const chalk = require('chalk');
 const log = console.log;
-
-const argv = require('minimist')(process.argv.slice(2));
+const errorMsg = chalk.bold.red('Error: ');
 
 // Arguments
+const argv = require('minimist')(process.argv.slice(2));
 const host = argv.host !== undefined ? argv.host : '127.0.0.1';
 const user = argv.user !== undefined ? argv.user : 'root';
 const db = argv.db !== undefined ? argv.db : '';
 const table = argv.table !== undefined ? argv.table : '';
 const file = argv.file !== undefined ? argv.file : '';
 const delimiter = argv.delimiter !== undefined ? argv.delimiter : ',';
-
-const errorMsg = chalk.bold.red('Error: ');
 
 if (!db) {
     log(errorMsg + chalk.red('Please define db!'));
