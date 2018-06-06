@@ -24,31 +24,33 @@ const table = argv.table !== undefined ? argv.table : '';
 const file = argv.file !== undefined ? argv.file : '';
 const delimiter = argv.delimiter !== undefined ? argv.delimiter : ',';
 
+const errorMsg = chalk.bold.red('Error: ');
+
 if (!db) {
-    log(chalk.bold.red('Error: ') + chalk.red('Please define db!'));
+    log(errorMsg + chalk.red('Please define db!'));
     return;
 }
 
 if (!table) {
-    log(chalk.bold.red('Error: ') + chalk.red('Please define table!'));
+    log(errorMsg + chalk.red('Please define table!'));
     return;
 }
 
 if (!file) {
-    log(chalk.bold.red('Error: ') + chalk.red('Please define file!'));
+    log(errorMsg + chalk.red('Please define file!'));
     return;
 }
 
 prompt.start();
 prompt.get(promptProperties, function (err, result) {
     if (err) {
-        log(chalk.bold.red('Error: ') + chalk.red('Password input failed!'));
+        log(errorMsg + chalk.red('Password input failed!'));
         throw err; 
     }
 
     const pw = result.password;
 
-    // Setip MySQL connection
+    // Setup MySQL connection
     let connection = mysql.createConnection({
         host: host,
         user: user,
@@ -93,7 +95,7 @@ prompt.get(promptProperties, function (err, result) {
             // Insert the data
             let query = connection.query(insertQuery, newEntry, function (err, result) {
                 if (err) {
-                    log(chalk.bold.red('Error: ') + chalk.red(err.sqlMessage));
+                    log(errorMsg + chalk.red(err.sqlMessage));
                     throw err;
                 }
 
@@ -115,7 +117,7 @@ prompt.get(promptProperties, function (err, result) {
 
                                 let query = connection.query(relQuery, relEntry, function (err, result) {
                                     if (err) {
-                                        log(chalk.bold.red('Error: ') + chalk.red(err.sqlMessage));
+                                        log(errorMsg + chalk.red(err.sqlMessage));
                                         throw err;
                                     }
                                 });
@@ -132,14 +134,14 @@ prompt.get(promptProperties, function (err, result) {
     // Check for valid file source
     fs.access(__dirname + '/' + file, fs.constants.R_OK, (err) => {
         if (err) {
-            log(chalk.bold.red('Error: ') + chalk.red('No access to file!'));
+            log(errorMsg + chalk.red('No access to file!'));
             return;
         }    
 
         // Connect to database
         connection.connect(function(err) {
             if (err) {
-                log(chalk.bold.red('Error: ') + chalk.red('Could not connect to database!'));
+                log(errorMsg + chalk.red('Could not connect to database!'));
                 return;
             }
 
