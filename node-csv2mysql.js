@@ -52,7 +52,7 @@ prompt.get(promptProperties, function (err, result) {
     const pw = result.password;
 
     // Setup MySQL connection
-    let connection = mysql.createConnection({
+    const connection = mysql.createConnection({
         host: host,
         user: user,
         password: pw,
@@ -60,22 +60,22 @@ prompt.get(promptProperties, function (err, result) {
     });
 
     // Start parsing the csv file
-    let parser = csv({delimiter: delimiter}, function(err, data) {
-        let insertQuery = 'INSERT INTO ' + table + ' SET ?';
+    const parser = csv({delimiter: delimiter}, function(err, data) {
+        const insertQuery = 'INSERT INTO ' + table + ' SET ?';
 
         // Getting the first row containing the table column names
-        let fields = data.shift();
+        const fields = data.shift();
 
         for (let i = 0; i < data.length; i++) {
-            let newEntry = {};
+            const newEntry = {};
 
-            let relationTableAndCols = [];
+            const relationTableAndCols = [];
 
             for (let j = 0; j < fields.length; j++) {
                 // Checking if the column is for a relationship
-                let isRelation = fields[j].match(/\[(.*?)\]/);
+                const isRelation = fields[j].match(/\[(.*?)\]/);
                 if (isRelation && isRelation.length >= 2) {
-                    let relationData = isRelation[1].split('|');
+                    const relationData = isRelation[1].split('|');
                     if (relationData && relationData.length === 3) {
                         relationTableAndCols[j] = {
                             table: relationData[0],
@@ -94,29 +94,29 @@ prompt.get(promptProperties, function (err, result) {
             const dataIndex = i;
 
             // Insert the data
-            let query = connection.query(insertQuery, newEntry, function (err, result) {
+            const query = connection.query(insertQuery, newEntry, function (err, result) {
                 if (err) {
                     log(errorMsg + chalk.red(err.sqlMessage));
                     throw err;
                 }
 
-                let insertId = result.insertId;
+                const insertId = result.insertId;
 
                 // Add relationship data if any specified
                 for (let k = 0; k < relationTableAndCols.length; k++) {
                     if (relationTableAndCols[k] !== undefined) {
-                        let relData = relationTableAndCols[k];
-                        let relValue = data[dataIndex][k].split('-');
+                        const relData = relationTableAndCols[k];
+                        const relValue = data[dataIndex][k].split('-');
 
                         if (relValue.length > 0) {
                             for (let l = 0; l < relValue.length; l++) {
-                                let relEntry = {};
+                                const relEntry = {};
                                 relEntry[relData.column_x] = insertId;
                                 relEntry[relData.column_y] = relValue[l];
 
-                                let relQuery = 'INSERT INTO ' + relData.table.toLowerCase() + ' SET ?';
+                                const relQuery = 'INSERT INTO ' + relData.table.toLowerCase() + ' SET ?';
 
-                                let query = connection.query(relQuery, relEntry, function (err, result) {
+                                const query = connection.query(relQuery, relEntry, function (err, result) {
                                     if (err) {
                                         log(errorMsg + chalk.red(err.sqlMessage));
                                         throw err;
