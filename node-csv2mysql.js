@@ -26,18 +26,20 @@ const file = argv.file !== undefined ? argv.file : '';
 const delimiter = argv.delimiter !== undefined ? argv.delimiter : ',';
 
 if (!db) {
-    log(errorMsg + chalk.red('Please define db!'));
-    return;
+    throwMissingArgument('db');
 }
 
 if (!table) {
-    log(errorMsg + chalk.red('Please define table!'));
-    return;
+    throwMissingArgument('table');
 }
 
 if (!file) {
-    log(errorMsg + chalk.red('Please define file!'));
-    return;
+    throwMissingArgument('file');
+}
+
+function throwMissingArgument (type) {
+    log(errorMsg + chalk.red('Please define ' + type));
+    throw new Error('Missing argument');
 }
 
 prompt.start();
