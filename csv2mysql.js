@@ -1,4 +1,5 @@
 const fs = require('fs');
+const path = require('path');
 const csv = require('csv-parse');
 const mysql = require('mysql');
 const prompt = require('prompt');
@@ -138,7 +139,7 @@ prompt.get(promptProperties, (err, result) => {
     });
 
     // Check for valid file source
-    fs.access(__dirname + '/' + file, fs.constants.R_OK, err => {
+    fs.access(path.join(__dirname, file), fs.constants.R_OK, err => {
         if (err) {
             log(errorMsg + chalk.red('No access to file!'));
             return;
@@ -152,7 +153,7 @@ prompt.get(promptProperties, (err, result) => {
             }
 
             // Start reading file content
-            fs.createReadStream(__dirname + '/' + file).pipe(parser);
+            fs.createReadStream(path.join(__dirname, file)).pipe(parser);
         });
     });
 });
