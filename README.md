@@ -2,12 +2,12 @@
 This node.js script can import data from a csv file into a MySQL table.
 
 ## Usage
-Run "node node-csv2mysql.js" with the required options.
+Run "node csv2mysql.js" with the required options.
 
 Enter your MySQL password in the prompt that appears after starting the script.
 
 ### Example
-``node node-csv2mysql.js --host 127.0.0.1 --user root --db csv2mysql --table csv2mysql --file example.csv``
+``node csv2mysql.js --host 127.0.0.1 --user root --db csv2mysql --table csv2mysql --file example.csv``
 
 ### Options
 |Name|Description|Default value|
