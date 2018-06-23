@@ -20,7 +20,7 @@ Enter your MySQL password in the prompt that appears after starting the script.
 |delimiter|CSV data delimiter|,|
 
 ### CSV syntax
-First row defines the column names in MySQL. All names from the CSV-file will be lowercased. The following rows are the values inserted. By default all values should be seperated by a comma - otherwise set the delimiter something else in the arguments.
+First row defines the column names in MySQL. All names from the CSV-file will be lowercased. The following rows are the values to be inserted. By default all values should be seperated by a comma - otherwise set the delimiter something else in the arguments.
 
 ```
 FieldX,FieldY,FieldZ
@@ -35,4 +35,4 @@ In this example the table name would be "relationx" and the column names "csv2my
 
 To insert multiple values seperate the values with a "-".
 
-See [example.csv](https://raw.githubusercontent.com/jenbuzz/node-csv2mysql/master/example.csv) for more.
+See [example.csv](https://raw.githubusercontent.com/jenbuzz/node-csv2mysql/master/example.csv) for more information on the format.
