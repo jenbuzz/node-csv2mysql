@@ -17,7 +17,6 @@ const {log} = console;
 const errorMsg = chalk.bold.red('Error: ');
 
 // Arguments
-
 const argv = parsearg(process.argv.slice(2));
 const host = argv.host === undefined ? '127.0.0.1' : argv.host;
 const user = argv.user === undefined ? 'root' : argv.user;
@@ -60,7 +59,7 @@ prompt.get(promptProperties, (err, result) => {
         database
     });
 
-    // Start parsing the csv file
+    // Create parser of csv file
     const parser = csv({delimiter}, (err, data) => {
         if (err) {
             log(errorMsg + chalk.red('File parsing failed'));
@@ -78,7 +77,7 @@ prompt.get(promptProperties, (err, result) => {
             const relationTableAndCols = [];
 
             for (let j = 0; j < fields.length; j++) {
-                // Checking if the column is for a relationship
+                // Checking if the column is used for a relation
                 const isRelation = fields[j].match(/\[(.*?)\]/);
                 if (isRelation && isRelation.length >= 2) {
                     const relationData = isRelation[1].split('|');
@@ -99,7 +98,7 @@ prompt.get(promptProperties, (err, result) => {
 
             const dataIndex = i;
 
-            // Insert the data
+            // Insert data into MySQL
             const query = connection.query(insertQuery, newEntry, (err, result) => {
                 if (err) {
                     log(errorMsg + chalk.red(err.sqlMessage));
