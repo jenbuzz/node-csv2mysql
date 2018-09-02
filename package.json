@@ -20,9 +20,9 @@
   "dependencies": {
     "chalk": "^2.4.1",
     "csv": "^3.1.0",
-    "csv-parse": "^2.5.0",
+    "csv-parse": "^3.0.0",
     "minimist": "^1.2.0",
-    "mysql": "^2.15.0",
+    "mysql": "^2.16.0",
     "prompt": "^1.0.0"
   },
   "devDependencies": {
@@ -31,7 +31,10 @@
   "xo": {
     "space": 4,
     "rules": {
-      "space-before-function-paren": ["error", "always"]
+      "space-before-function-paren": [
+        "error",
+        "always"
+      ]
     }
   }
 }
